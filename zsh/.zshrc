@@ -178,3 +178,49 @@ export PATH="$PATH:$HOME/.rvm/bin"
 
 export REACT_EDITOR=nvim
 code () { VSCODE_CWD="$PWD" open -n -b "com.microsoft.VSCode" --args $* ;}
+
+# Bazel + FZF Integration
+_fzf_complete_bazel_test() {
+    _fzf_complete '-m' "$@" < <(command bazel query \
+        "kind('(test|test_suite) rule', //...)" 2>/dev/null)
+}
+
+_fzf_complete_bazel_build() {
+    _fzf_complete '-m' "$@" < <(command bazel query \
+        "kind('rule', //...) except kind('(test|test_suite) rule', //...)" 2>/dev/null)
+}
+
+_fzf_complete_bazel_run() {
+    _fzf_complete '-m' "$@" < <(command bazel query \
+        "kind('.*_binary rule', //...)" 2>/dev/null)
+}
+
+_fzf_complete_bazel() {
+    local tokens
+    tokens=($(printf "%s" "$LBUFFER" | xargs -n 1))
+
+    if [ ${#tokens[@]} -ge 3 ]; then
+        case "${tokens[2]}" in
+        test)
+            _fzf_complete_bazel_test "$@"
+            ;;
+        build)
+            _fzf_complete_bazel_build "$@"
+            ;;
+        run)
+            _fzf_complete_bazel_run "$@"
+            ;;
+        *)
+            # Original completion for other commands
+            _fzf_complete '-m' "$@" < <(command bazel query --keep_going \
+                --noshow_progress \
+                "kind('(binary rule)|(generated file)', deps(//...))" 2>/dev/null)
+            ;;
+        esac
+    else
+        # Original completion when no command specified
+        _fzf_complete '-m' "$@" < <(command bazel query --keep_going \
+            --noshow_progress \
+            "kind('(binary rule)|(generated file)', deps(//...))" 2>/dev/null)
+    fi
+}
