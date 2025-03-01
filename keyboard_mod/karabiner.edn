@@ -66,7 +66,7 @@
 ;; layers works too, but only recommended for non-typing keys like . or tab
 ;; to use more regular typing keys, use simlayers
  :simlayers {
-    :d-mode {:key :d}      ; navigation    hnei
+    :e-mode {:key :e}      ; navigation    hnei
     :s-mode {:key :s}      ; delimeters    { } ( _ [ ]
 } ;; simlayers 
  
@@ -77,8 +77,8 @@
                ;;  [:comma :left_shift nil {:alone [:comma]}]  ;-- ; -> ; (alone) | left_command (hold);
                  ]
          }
-    { :des "d-mode (navigation)"
-      :rules [:d-mode
+    { :des "e-mode (navigation)"
+      :rules [:e-mode
           [:h :left_arrow]
           [:j :down_arrow]
           [:k :up_arrow]
