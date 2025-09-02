@@ -369,7 +369,7 @@
     if (( $1 )); then
       # Styling for up-to-date Git status.
       local       meta='%f'     # default foreground
-      local      clean='%B%005F'   # magenta foreground
+      local      clean='%76F'   # green foreground
       local   modified='%39F'  # blue foreground
       local  untracked='%178F'   # yellow foreground
       local conflicted='%196F'  # red foreground
@@ -383,6 +383,7 @@
     fi
 
     local res
+    local branch_color='%B%005F'  # magenta
 
     if [[ -n $VCS_STATUS_LOCAL_BRANCH ]]; then
       local branch=${(V)VCS_STATUS_LOCAL_BRANCH}
@@ -390,7 +391,7 @@
       # Otherwise show the first 12 … the last 12.
       # Tip: To always show local branch name in full without truncation, delete the next line.
       # (( $#branch > 32 )) && branch[13,-13]="…"  # <-- this line
-      res+="${clean}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
+      res+="${branch_color}${(g::)POWERLEVEL9K_VCS_BRANCH_ICON}${branch//\%/%%}"
     fi
 
     if [[ -n $VCS_STATUS_TAG
