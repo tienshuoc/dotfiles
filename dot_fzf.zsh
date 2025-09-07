@@ -66,6 +66,12 @@ _fzf_complete_git_restore() {
 )
 }
 
+_fzf_complete_git_stash() {
+    _fzf_complete "-m --preview 'git diff --color=always {}'" "$@" < <(
+    command git ls-files --modified --others --exclude-standard
+)
+}
+
 _fzf_complete_git() {
     local tokens
     tokens=($(printf "%s" "$LBUFFER" | xargs -n 1))
@@ -77,6 +83,9 @@ _fzf_complete_git() {
             ;;
         restore)
             _fzf_complete_git_restore "$@"
+            ;;
+        stash)
+            _fzf_complete_git_stash "$@"
             ;;
         esac
     else
