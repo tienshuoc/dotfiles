@@ -5,7 +5,7 @@ if [[ ! "$PATH" == */home/tienshuoc/.fzf/bin* ]]; then
 fi
 
 
-export FZF_DEFAULT_COMMAND='rg --files --no-ignore --hidden'
+export FZF_DEFAULT_COMMAND='fd --type f --hidden --exclude .cache --exclude .git'
 export FZF_CTRL_T_COMMAND="$FZF_DEFAULT_COMMAND"
 
 # Bazel + FZF Integration
