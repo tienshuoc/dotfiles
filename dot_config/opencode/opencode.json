@@ -1,0 +1,46 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "sambanova/MiniMax-M2.5",
+  "provider": {
+    "sambanova": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "SambaNova",
+      "options": {
+        "baseURL": "https://api.sambanova.ai/v1",
+        "apiKey": "{env:SAMBANOVA_API_KEY}"
+      },
+      "models": {
+        "MiniMax-M2.5": {
+          "name": "MiniMax-M2.5",
+          "temperature": true,
+          "limit": {
+            "context": 163840,
+            "output": 16384
+          },
+          "cost": {
+            "input": 0.3,
+            "output": 1.2
+          }
+        }
+      }
+    }
+  },
+  "agent": {
+    "plan": {
+      "temperature": 1.0,
+      "top_p": 0.9
+    },
+    "explore": {
+      "temperature": 1.0,
+      "top_p": 0.9
+    },
+    "build": {
+      "temperature": 1.0,
+      "top_p": 0.9
+    },
+    "general": {
+      "temperature": 1.0,
+      "top_p": 0.9
+    }
+  }
+}
