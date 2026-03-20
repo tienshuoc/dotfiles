@@ -1,53 +1,53 @@
 [user]
 	name = Tien-Shuo Chang
 	email = tienshuo.chang@gmail.com
-    
+
 [color]
-    ui = auto
+	ui = auto
 
 [commit]
-    verbose = true
-    
+	verbose = true
+
 [filter "lfs"]
 	process = git-lfs filter-process
 	required = true
 	clean = git-lfs clean -- %f
 	smudge = git-lfs smudge -- %f
-    
+
 [difftool]
-    prompt = false
-    cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
-    
+	prompt = false
+	cmd = "nvim -d \"$LOCAL\" \"$REMOTE\""
+
 [diff]
 	tool = nvimdiff
-  algorithm = histogram
+	algorithm = histogram
 
 [alias]
 	b = !git branch -vv
-  s = !git status
-  dt = !git difftool
-  pnto = !git push -u origin $(git symbolic-ref --short HEAD)
-  mm = !git fetch && git merge origin/main
-  su = !git submodule update --init --recursive
-  l = !git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all
-  oc = !/scratch/tienshuoc/squashfs-root/usr/bin/nvim  $(git grep -l '<<<<<<< HEAD')
-  gone = "!git branch -vv | fgrep ': gone]' | awk '{print $1}' | xargs -r git branch -d"
-    
+	s = !git status
+	dt = !git difftool
+	pnto = !git push -u origin $(git symbolic-ref --short HEAD)
+	mm = !git fetch && git merge origin/main
+	su = !git submodule update --init --recursive
+	l = !git log --graph --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%ar)%C(reset) %C(white)%an%C(reset)%C(bold yellow)%d%C(reset) %C(dim white)- %s%C(reset)' --all
+	oc = !nvim $(git grep -l '<<<<<<< HEAD')
+	gone = "!git branch -vv | fgrep ': gone]' | awk '{print $1}' | xargs -r git branch -d"
+
 [core]
-  pager = delta
-    
+	pager = delta
+
 [submodule]
 	recurse = true
-    
+
 [color]
 	ui = true
-    
+
 [push]
 	default = simple
-    
+
 [merge]
 	tool = diffview
-    
+
 [mergetool "diffview"]
 	cmd = nvim -n -c "DiffviewOpen" "$MERGE"
 	trustExitCode = true
