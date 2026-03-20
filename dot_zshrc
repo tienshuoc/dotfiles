@@ -70,3 +70,4 @@ bb() {
     # Encode and send to clipboard
     printf "\033]52;c;%s\a" "$(printf "%s" "$data" | base64 -w0)"
 }
+source ~/powerlevel10k/powerlevel10k.zsh-theme
