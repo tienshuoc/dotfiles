@@ -21,7 +21,7 @@ set -e
 # Function to display help message
 help() {
     echo "
-Helper script to attach to a running docker env on the sc-vnc hosts
+Helper script to attach to a running docker env
   IF multiple envs exist, print the names, and software repos
   IF NO envs exist, prompt to make one
   IF HOSTNAME contains DOCKER, nothing to attach to
