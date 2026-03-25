@@ -70,4 +70,8 @@ bb() {
     # Encode and send to clipboard
     printf "\033]52;c;%s\a" "$(printf "%s" "$data" | base64 -w0)"
 }
+
+######### Keys
+export SAMBANOVA_API_KEY = {{ onepasswordRead "op://Private/sn-cloud-api-key/credential" }}
+
 source ~/powerlevel10k/powerlevel10k.zsh-theme
