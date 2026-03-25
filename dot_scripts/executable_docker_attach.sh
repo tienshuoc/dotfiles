@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# attach.sh - Helper script to attach to running docker environments on sc-vnc hosts
+# attach.sh - Helper script to attach to running docker environments
 #
 # Usage:
 #   ./attach.sh              - List docker sessions and attach to selected one
