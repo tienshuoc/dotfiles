@@ -1,0 +1,79 @@
+# ========== p10k instant prompt (must be near top)
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+
+# ========== Oh My Zsh Configuration
+export ZSH="$HOME/.oh-my-zsh"
+ZSH_THEME="powerlevel10k/powerlevel10k"
+
+DISABLE_UNTRACKED_FILES_DIRTY="true"
+
+# Uncomment to enable oh-my-zsh plugins
+plugins=(zsh-autosuggestions zsh-syntax-highlighting) # `zsh-syntax-highlighting` needs to be at the very end
+# zsh-autocomplete setup (requires manual installation)
+# source $ZSH/plugins/zsh-autocomplete/zsh-autocomplete.plugin.zsh
+
+source $ZSH/oh-my-zsh.sh
+
+# ========== Environment Variables
+export SAMBANOVA_API_KEY={{ onepasswordRead "op://Private/sn-cloud-api-key/credential" }}
+
+# ========== Shell Options
+# Remove duplicate commands from history when re-running
+setopt HIST_IGNORE_ALL_DUPS
+# Skip duplicates when navigating history with arrow keys
+setopt HIST_FIND_NO_DUPS
+
+# ========== Aliases
+
+## Navigation
+alias gtmr='cd $(ls --color=no -td -- */ | head -n 1)'
+alias gtnv='cd ~/.config/nvim'
+alias gtcm='cd ~/.local/share/chezmoi'
+
+## File Listing
+alias ls='ls --color'
+alias ll='ls -lF'
+alias lla='ls -alF'
+alias llt='ls -talF'
+alias llr='echo "Most recent 10." && ls -tlF | head -n10'
+
+## Find
+alias findfile='fd --type f --full-path -i --exclude .cache --exclude .git'
+
+## Vim Sessions
+alias vs1='nvim -S ~/s1.vim'
+alias vs2='nvim -S ~/s2.vim'
+alias vs3='nvim -S ~/s3.vim'
+alias vs4='nvim -S ~/s4.vim'
+
+## Git
+alias gam='function _gam() { git commit -am "$*"; }; _gam'
+alias gm='function _gm() { git commit -m "$*"; }; _gm'
+
+## Tmux
+alias ta="tmux at"
+
+## Utilities
+alias ozrc="$EDITOR ~/.zshrc"
+alias szrc='source ~/.zshrc'
+
+## Archives
+alias tart='find . -type f \( -name "*.tar.zst" -o -name "*.tar.gz" -o -name "*.tar" \) -exec sh -c '\''
+    case "$1" in
+      *.tar.zst) zstd -dc "$1" | tar -xf - ;;
+      *.tar.gz) tar -xzf "$1" ;;
+      *.tar) tar -xf "$1" ;;
+    esac
+  '\'' _ {} \; > /dev/null 2>&1 && echo "tar done!"'
+
+# ========== Scripts
+[ -f ~/.scripts/utils.sh ] && source ~/.scripts/utils.sh
+
+# ========== FZF
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f ~/.fzf/shell/key-bindings.zsh ] && source ~/.fzf/shell/key-bindings.zsh
+
+# ========== p10k Theme
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh

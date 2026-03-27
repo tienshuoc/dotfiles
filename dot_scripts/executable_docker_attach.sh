@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# docker_attach.sh - Helper script to attach to running docker environments on sc-vnc hosts
+# docker_attach.sh - Helper script to attach to running docker environments
 #
 # Usage (as function in .bashrc):
 #   dpa() {
@@ -26,7 +26,7 @@ set -e
 # Function to display help message
 help() {
     echo "
-Helper script to attach to a running docker env on the sc-vnc hosts
+Helper script to attach to a running docker env
   IF multiple envs exist, print the names, and software repos
   IF NO envs exist, prompt to make one
   IF HOSTNAME contains DOCKER, nothing to attach to
