@@ -1,11 +1,16 @@
 #!/usr/bin/env bash
 #
-# attach.sh - Helper script to attach to running docker environments on sc-vnc hosts
+# docker_attach.sh - Helper script to attach to running docker environments on sc-vnc hosts
 #
-# Usage:
-#   ./attach.sh              - List docker sessions and attach to selected one
-#   ./attach.sh -a, --attach - Attach to the original session (e.g., to kill container)
-#   ./attach.sh -h, --help   - Show this help message
+# Usage (as function in .bashrc):
+#   dpa() {
+#       bash /home/tienshuoc/.scripts/docker_attach.sh
+#   }
+#
+# CLI Usage:
+#   ./docker_attach.sh              - List docker sessions and attach to selected one
+#   ./docker_attach.sh -a, --attach - Attach to the original session (e.g., to kill container)
+#   ./docker_attach.sh -h, --help   - Show this help message
 #
 # What it does:
 #   1. Checks if already inside a docker container (hostname contains "DOCKER")
