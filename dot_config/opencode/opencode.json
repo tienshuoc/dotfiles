@@ -43,5 +43,12 @@
       "top_p": 0.9
     }
   },
-  "default_agent": "plan"
+  "default_agent": "plan",
+  "mcp": {
+    "code-review-graph": {
+      "type": "local",
+      "command": ["code-review-graph", "serve"],
+      "enabled": true
+    }
+  }
 }
