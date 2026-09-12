@@ -38,6 +38,8 @@ example = 4
 [mcp_servers.other]
 command = "keep-this-server"
 ''')
+        (cls.home / ".claude/CLAUDE.md").write_text("previous standalone Claude instructions")
+        (cls.home / ".codex/AGENTS.md").write_text("previous standalone Codex instructions")
         (cls.home / ".claude/skills/review-changes.md").write_text("superseded")
         (cls.home / ".claude/skills/mine/SKILL.md").write_text("unmanaged skill")
         (cls.home / ".config/opencode/plugins/crg-plugin.ts").write_text("superseded")
@@ -89,8 +91,18 @@ agentMarketplaceDir = ''' + json.dumps(str(cls.root / "marketplace")) + "\n")
         self.assertEqual(result.stdout, "")
 
     def test_shared_instructions_skills_and_settings(self):
+        shared = self.home / ".agents/AGENTS.md"
+        claude = self.home / ".claude/CLAUDE.md"
+        codex = self.home / ".codex/AGENTS.md"
+        self.assertFalse(claude.is_symlink())
+        import_line = claude.read_text().splitlines()[0]
+        self.assertTrue(import_line.startswith("@"))
+        self.assertEqual((claude.parent / import_line[1:]).resolve(), shared.resolve())
+        self.assertTrue(codex.is_symlink())
+        self.assertEqual(codex.readlink(), Path("../.agents/AGENTS.md"))
+        self.assertEqual(codex.resolve(), shared.resolve())
         content = [(self.home / p).read_text().strip() for p in
-                   [".claude/CLAUDE.md", ".codex/AGENTS.md", ".config/opencode/AGENTS.md"]]
+                   [".agents/AGENTS.md", ".codex/AGENTS.md", ".config/opencode/AGENTS.md"]]
         self.assertEqual(len(set(content)), 1)
         self.assertEqual("withjenkins" in content[0], self.work)
         self.assertEqual("Create pull requests as drafts" in content[0], self.work)

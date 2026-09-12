@@ -1,8 +1,10 @@
 # Coding agent configuration
 
 chezmoi owns the authored configuration for Claude Code, Codex, and OpenCode.
-Installed targets are regular files. Keep account credentials, sessions, automatic
-memories, plugin caches, and machine trust decisions local.
+Claude Code and Codex share `~/.agents/AGENTS.md`: Claude imports it and Codex's
+`~/.codex/AGENTS.md` is a relative symlink to it. OpenCode receives a regular file
+rendered from the same instruction templates. Keep account credentials, sessions,
+automatic memories, plugin caches, and machine trust decisions local.
 
 ## Editing
 
@@ -18,8 +20,31 @@ memories, plugin caches, and machine trust decisions local.
 | Graph lifecycle helper | `dot_config/agents/executable_graph-hook.sh` |
 | Tool version baseline | `.chezmoidata/agents.toml` |
 
-The global instruction files and two skill installations render from common
-templates. Edit the shared source rather than the small wrappers. The empty work
+The shared global file combines the common and work instruction fragments. The
+work fragment stays empty in the personal repository. Edit those fragments to
+change shared rules; keep Claude-only additions in `dot_claude/CLAUDE.md.tmpl`.
+
+| Source | Installed target |
+| --- | --- |
+| `dot_agents/AGENTS.md.tmpl` | `~/.agents/AGENTS.md`, the shared instructions |
+| `dot_claude/CLAUDE.md.tmpl` | `~/.claude/CLAUDE.md`, imports `@../.agents/AGENTS.md` |
+| `dot_codex/symlink_AGENTS.md` | `~/.codex/AGENTS.md` -> `../.agents/AGENTS.md` |
+| `dot_config/opencode/AGENTS.md.tmpl` | `~/.config/opencode/AGENTS.md`, rendered from the same fragments |
+
+The relative import and symlink work independently of the home directory's name
+or the dotfiles checkout location. For instruction-only changes, preview and apply
+these targets after editing the source:
+
+```sh
+chezmoi diff ~/.agents/AGENTS.md ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.config/opencode/AGENTS.md
+chezmoi apply ~/.agents/AGENTS.md ~/.claude/CLAUDE.md ~/.codex/AGENTS.md ~/.config/opencode/AGENTS.md
+```
+
+Edit templates in the source instead of running `chezmoi re-add` on the rendered
+shared file, which would replace its common/work composition with a static copy.
+Start fresh agent sessions after applying instruction changes.
+
+The two skill installations also render from common templates. The empty work
 instruction/settings/setup fragments are extension points for the work repository.
 Do not put private work content into the personal base behind a conditional.
 
@@ -110,9 +135,10 @@ through explicit entries in `.chezmoiremove`.
 ## Verification
 
 Run `python3 -B -m unittest discover -s tests` from either checkout. It renders into a temporary
-home, checks partial-file preservation and idempotence, and exercises hooks and
-restore behavior using synthetic data and mocked external commands. It does not
-apply to the real home or contact an LLM.
+home, verifies migration from standalone instruction files to the shared file,
+Claude import, and Codex symlink, checks partial-file preservation and idempotence,
+and exercises hooks and restore behavior using synthetic data and mocked external
+commands. It does not apply to the real home or contact an LLM.
 
 References: [shared chezmoi templates](https://www.chezmoi.io/reference/special-directories/chezmoitemplates/),
 [partial-file management](https://www.chezmoi.io/user-guide/manage-different-types-of-file/#manage-part-but-not-all-of-a-file),
