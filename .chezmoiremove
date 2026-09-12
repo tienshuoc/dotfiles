@@ -1,0 +1,5 @@
+.config/opencode/plugins/crg-plugin.ts
+.claude/skills/review-changes.md
+.claude/skills/refactor-safely.md
+.claude/skills/explore-codebase.md
+.claude/skills/debug-issue.md

@@ -1,0 +1,92 @@
+{
+  "attribution": {
+    "commit": "",
+    "pr": ""
+  },
+  "outputStyle": "Concise",
+  "effortLevel": "high",
+  "tui": "fullscreen",
+  "skipAutoPermissionPrompt": true,
+  "permissions": {
+    "allow": [
+      "mcp__code-review-graph__*",
+      "Bash(grep:*)",
+      "Bash(cd:*)"
+    ]
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/agent-track.py\" start",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Edit|Write|Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.config/agents/graph-hook.sh\" update",
+            "timeout": 30
+          }
+        ]
+      },
+      {
+        "matcher": "Agent|Task",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/agent-track.py\" stop",
+            "timeout": 5
+          }
+        ]
+      }
+    ],
+    "SessionStart": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash \"$HOME/.config/agents/graph-hook.sh\" status",
+            "timeout": 10
+          },
+          {
+            "type": "command",
+            "command": "python3 \"$HOME/.claude/hooks/agent-track.py\" reset",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  },
+  "statusLine": {
+    "type": "command",
+    "command": "bash \"$HOME/.claude/statusline.sh\""
+  },
+  "enabledPlugins": {
+    "clangd-lsp@claude-plugins-official": true,
+    "caveman@caveman": true
+  },
+  "extraKnownMarketplaces": {
+    "claude-plugins-official": {
+      "source": {
+        "source": "github",
+        "repo": "anthropics/claude-plugins-official"
+      }
+    },
+    "caveman": {
+      "source": {
+        "source": "github",
+        "repo": "JuliusBrussee/caveman"
+      },
+      "autoUpdate": true
+    }
+  }
+}

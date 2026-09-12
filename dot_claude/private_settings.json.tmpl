@@ -1,0 +1,11 @@
+{{- $base := includeTemplate "agents/claude-settings-base.json" . | fromJson -}}
+{{- $extra := includeTemplate "agents/claude-settings-extra.json" . | fromJson -}}
+{{- $hooks := deepCopy $base.hooks -}}
+{{- range $event, $entries := (get $extra "hooks" | default dict) -}}
+{{- $_ := set $hooks $event (concat (get $hooks $event | default list) $entries) -}}
+{{- end -}}
+{{- $allow := concat $base.permissions.allow (dig "permissions" "allow" list $extra) | uniq -}}
+{{- $result := mergeOverwrite $base $extra -}}
+{{- $_ := set $result "hooks" $hooks -}}
+{{- $_ := set $result.permissions "allow" $allow -}}
+{{ $result | toPrettyJson }}

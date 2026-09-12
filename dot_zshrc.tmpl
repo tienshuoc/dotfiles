@@ -17,6 +17,8 @@ plugins=(zsh-autosuggestions zsh-syntax-highlighting) # `zsh-syntax-highlighting
 source $ZSH/oh-my-zsh.sh
 
 # ========== Environment Variables
+# Shared skills are installed in ~/.agents/skills; avoid duplicate Claude discovery.
+export OPENCODE_DISABLE_CLAUDE_CODE_SKILLS=1
 export SAMBANOVA_API_KEY={{ onepasswordRead "op://Private/sn-cloud-api-key/credential" }}
 
 # ========== Shell Options

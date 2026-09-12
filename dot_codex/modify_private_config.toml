@@ -1,0 +1,18 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $config := dict -}}
+{{- if .chezmoi.stdin -}}{{- $config = fromToml .chezmoi.stdin -}}{{- end -}}
+{{- $original := deepCopy $config -}}
+{{- $config = setValueAtPath "model" "gpt-6-astra" $config -}}
+{{- $config = setValueAtPath "model_reasoning_effort" "max" $config -}}
+{{- $config = setValueAtPath "approvals_reviewer" "auto_review" $config -}}
+{{- $config = setValueAtPath "tui.status_line" (list "model-with-reasoning" "current-dir" "git-branch" "thread-name" "approval-mode" "context-remaining") $config -}}
+{{- $config = setValueAtPath "tui.status_line_use_colors" true $config -}}
+{{- $config = setValueAtPath "mcp_servers.code-review-graph.command" "code-review-graph" $config -}}
+{{- $config = setValueAtPath "mcp_servers.code-review-graph.args" (list "serve") $config -}}
+{{- $extra := includeTemplate "agents/codex-extra.toml" . | fromToml -}}
+{{- $result := mergeOverwrite $config $extra -}}
+{{- if eq (toJson $original) (toJson $result) -}}
+{{- .chezmoi.stdin -}}
+{{- else -}}
+{{- $result | toToml -}}
+{{- end -}}

@@ -1,0 +1,61 @@
+#!/usr/bin/env python3
+"""Restore agent dependencies and Claude plugins after chezmoi apply."""
+import json
+import os
+from pathlib import Path
+import shutil
+import subprocess
+import sys
+
+def run(*args):
+    subprocess.run(args, check=True)
+
+def read_json(*args):
+    return json.loads(subprocess.check_output(args, text=True))
+
+for tool in ("node", "jq", "git"):
+    if not shutil.which(tool):
+        sys.exit(f"agent-setup: install {tool} first")
+graph_version = "{{ .agentTools.graphVersion }}"
+if not shutil.which("code-review-graph"):
+    if shutil.which("uv"):
+        run("uv", "tool", "install", f"code-review-graph=={graph_version}")
+    elif shutil.which("pipx"):
+        run("pipx", "install", f"code-review-graph=={graph_version}")
+    else:
+        sys.exit("agent-setup: install uv or pipx to restore code-review-graph")
+else:
+    version = subprocess.check_output(["code-review-graph", "--version"], text=True).strip()
+    if version != f"code-review-graph {graph_version}":
+        print(f"Keeping installed {version}; dotfiles baseline is {graph_version}.", file=sys.stderr)
+if not shutil.which("claude"):
+    print("Claude CLI is absent; skipping its MCP and plugin setup.")
+    sys.exit(0)
+
+root = Path(os.environ.get("CLAUDE_CONFIG_DIR", Path.home() / ".claude"))
+settings = json.loads((root / "settings.json").read_text())
+{{ template "agents/setup-extra.py" . }}
+# Account and project state is never copied into the dotfiles repository.
+registry = Path.home() / ".claude.json" if root == Path.home() / ".claude" else root / ".claude.json"
+state = json.loads(registry.read_text()) if registry.exists() else {}
+graph = state.get("mcpServers", {}).get("code-review-graph")
+if graph is None:
+    run("claude", "mcp", "add", "--scope", "user", "--transport", "stdio", "code-review-graph", "--", "code-review-graph", "serve")
+elif graph.get("command") != "code-review-graph" or graph.get("args", []) != ["serve"]:
+    sys.exit("agent-setup: existing user code-review-graph MCP differs; inspect it with claude mcp get code-review-graph")
+
+known = {entry["name"] for entry in read_json("claude", "plugin", "marketplace", "list", "--json")}
+for name, entry in settings.get("extraKnownMarketplaces", {}).items():
+    if name in known:
+        continue
+    source = entry["source"]
+    location = source.get("repo") or source.get("url") or source.get("path")
+    if not location:
+        sys.exit(f"agent-setup: unsupported marketplace source for {name}")
+    run("claude", "plugin", "marketplace", "add", location)
+installed = {entry["id"] for entry in read_json("claude", "plugin", "list", "--json") if entry.get("scope") == "user"}
+for plugin, enabled in settings.get("enabledPlugins", {}).items():
+    if enabled and plugin not in installed:
+        run("claude", "plugin", "install", "--scope", "user", plugin)
+print("Agent dependencies and Claude plugin installations are ready.")
+print("Connect account-backed Codex plugins through /plugins on each account.")
