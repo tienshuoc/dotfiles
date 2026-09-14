@@ -28,5 +28,14 @@ config.animation_fps = 60
 -- Limits the maximum number of frames per second that wezterm will attempt to draw.
 config.max_fps = 60
 
+-- Let bracket-specific rules handle (URL), [URL], and <URL>.
+-- WezTerm prefers the longest highlight, so a bare-URL rule can otherwise include ')'.
+config.hyperlink_rules = wezterm.default_hyperlink_rules()
+for _, rule in ipairs(config.hyperlink_rules) do
+	if rule.format == "$0" then
+		rule.regex = [[(?<![<(\[])]] .. rule.regex
+	end
+end
+
 -- and finally, return the configuration to wezterm
 return config
