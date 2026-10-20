@@ -107,9 +107,17 @@ agentMarketplaceDir = ''' + json.dumps(str(cls.root / "marketplace")) + "\n")
         self.assertEqual("withjenkins" in content[0], self.work)
         self.assertEqual("Create pull requests as drafts" in content[0], self.work)
         skills = sorted((self.home / ".agents/skills").glob("*/SKILL.md"))
-        self.assertEqual(len(skills), 4)
+        self.assertEqual(len(skills), 5)
+        claude_only = "disable-model-invocation: true\n"
         for skill in skills:
-            self.assertEqual(skill.read_bytes(), (self.home / ".claude/skills" / skill.parent.name / "SKILL.md").read_bytes())
+            claude_skill = (self.home / ".claude/skills" / skill.parent.name / "SKILL.md").read_text()
+            # Claude has no per-skill policy file, so explicit-only skills carry the
+            # setting in frontmatter; Codex reads it from agents/openai.yaml.
+            if (skill.parent / "agents/openai.yaml").exists():
+                self.assertIn("allow_implicit_invocation: false", (skill.parent / "agents/openai.yaml").read_text())
+                self.assertIn(claude_only, claude_skill)
+                claude_skill = claude_skill.replace(claude_only, "", 1)
+            self.assertEqual(skill.read_text(), claude_skill)
         settings = json.loads((self.home / ".claude/settings.json").read_text())
         self.assertFalse(any(name.endswith(("_TOKEN", "_KEY")) for name in settings.get("env", {})))
         self.assertEqual("apiKeyHelper" in settings, self.work)

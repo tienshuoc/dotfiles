@@ -1,0 +1,5 @@
+interface:
+  display_name: "Landing Reviewed Changes"
+  short_description: "Review changes until findings converge, then land approved commits"
+policy:
+  allow_implicit_invocation: false
