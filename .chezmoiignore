@@ -66,3 +66,8 @@ docs
 .claude/hooks/agent-track-*.sh
 .claude/hooks/gh-pr-draft.sh
 tests
+
+# Manage Herdr configuration only on machines with herdr on PATH.
+{{- if not (lookPath "herdr") }}
+.config/herdr
+{{- end }}
