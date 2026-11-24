@@ -51,6 +51,7 @@ state, so do not replace it with `chezmoi add ~/.codex/config.toml`.
 | Location | Contents |
 | --- | --- |
 | `dot_zshrc.tmpl`, `dot_p10k.zsh`, `dot_fzf.zsh` | Shell and prompt |
+| `modify_dot_bashrc`, `dot_config/shell/tmux.sh` | tmux wrapper shared by bash and zsh; the Bash block preserves existing machine settings |
 | `dot_gitconfig`, `dot_tmux.conf`, `dot_wezterm.lua` | Git and terminals |
 | `dot_config/` | Application configuration |
 | `dot_claude/`, `dot_codex/`, `dot_agents/` | Agent settings and skill entrypoints |

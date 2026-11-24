@@ -56,6 +56,8 @@ alias gm='function _gm() { git commit -m "$*"; }; _gm'
 
 ## Tmux
 alias ta="tmux at"
+# Shared with bash: resets terminal mouse reporting after tmux exits.
+[ -f ~/.config/shell/tmux.sh ] && source ~/.config/shell/tmux.sh
 
 ## Utilities
 alias ozrc="$EDITOR ~/.zshrc"

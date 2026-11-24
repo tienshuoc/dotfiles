@@ -1,0 +1,19 @@
+{{- /* chezmoi:modify-template */ -}}
+{{- $block := `# >>> chezmoi tmux mouse cleanup >>>
+# Shared with zsh: resets terminal mouse reporting after tmux exits.
+[ -f ~/.config/shell/tmux.sh ] && source ~/.config/shell/tmux.sh
+# <<< chezmoi tmux mouse cleanup <<<
+` -}}
+{{- $pattern := `(?ms)^# >>> chezmoi tmux mouse cleanup >>>\n.*?^# <<< chezmoi tmux mouse cleanup <<<(?:\n|$)` -}}
+{{- if regexMatch $pattern .chezmoi.stdin -}}
+{{- regexReplaceAllLiteral $pattern .chezmoi.stdin $block -}}
+{{- else if or (contains "# >>> chezmoi tmux mouse cleanup >>>" .chezmoi.stdin) (contains "# <<< chezmoi tmux mouse cleanup <<<" .chezmoi.stdin) -}}
+{{- fail "incomplete tmux mouse cleanup markers in .bashrc" -}}
+{{- else -}}
+{{- .chezmoi.stdin -}}
+{{- if .chezmoi.stdin -}}
+{{- if not (hasSuffix "\n" .chezmoi.stdin) -}}{{ "\n" }}{{- end -}}
+{{ "\n" }}
+{{- end -}}
+{{- $block -}}
+{{- end -}}
