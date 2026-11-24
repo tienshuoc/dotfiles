@@ -2,6 +2,15 @@ onboarding = false
 
 [keys]
 prefix = "ctrl+h"
+last_pane = "prefix+l"
+focus_pane_right = "prefix+right"
+switch_tab = "prefix+1..9"
+
+[[keys.command]]
+key = "prefix+shift+l"
+type = "plugin_action"
+command = "local.workspace-history.last_workspace"
+description = "Last workspace"
 
 [ui.toast]
 delivery = "terminal"
@@ -10,7 +19,7 @@ delivery = "terminal"
 status_indicators = "symbols"
 
 [theme]
-name = "gruvbox"
+name = "kanagawa"
 auto_switch = false
 
 [terminal]
